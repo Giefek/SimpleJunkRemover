@@ -6,7 +6,11 @@ Simple Junk Remover is a free, open-source Batch script that can reclaims massiv
 <div align="center">
  <h1>Cleaning Features</h1>
  - Temporary Files
+ 
  - Temporary Setup Files
+   
+ - Temporary Internet Files
+
  - 
 
 <h1 align="center"> Donations </h1>

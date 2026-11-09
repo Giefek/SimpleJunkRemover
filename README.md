@@ -5,7 +5,10 @@
 100% Open-Source / Extremely lightweight / 68 Features / Windows 7–11 / Windows Server 2008 R2–2025 <br>
 No telemetry / No internet required / No admin rights needed / Fast and easy to use / MIT License
 
-<img width="1219" height="512" alt="Previev" src="https://github.com/user-attachments/assets/d004914e-40b9-4648-847b-25af805f07fe" />
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/d004914e-40b9-4648-847b-25af805f07fe" width="45%" alt="Preview 1" />
+  <img src="https://github.com/user-attachments/assets/c3f3de50-11cd-41e3-a5ec-e13a5b81a3d0" width="33.5%" alt="Preview 2" />
+</p>
 
 <h1>Full Cleaning List [v26.11]</h1>
 
@@ -96,5 +99,3 @@ No telemetry / No internet required / No admin rights needed / Fast and easy to 
 ### Windows Server & Web Services
 - IIS (Internet Information Services) Log Files
 - IIS HTTP Error Logs (HTTPERR)
-
-</div><img width="1219" height="512" alt="Previev" src="https://github.com/user-attachments/assets/45afcd02-efac-42b5-890e-213893596a44" />

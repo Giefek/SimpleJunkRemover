@@ -12,8 +12,6 @@ No telemetry / No internet required / No admin rights needed / Fast and easy to 
 
 <h1>Full Cleaning List [v26.11]</h1>
 
-</div>
-
 <div align="left">
 
 ### Windows Core & System Diagnostics

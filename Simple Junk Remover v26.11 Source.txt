@@ -1,0 +1,117 @@
+MIT License
+Copyright (c) 2026 Giefek
+
+@echo off
+title Simple Junk Remover v26.11
+setlocal EnableDelayedExpansion
+
+net session >nul 2>&1
+if '%errorlevel%' NEQ '0' (
+    echo [SimpleJunkRemover] Without administrator permissions some files will not be deleted...
+    timeout /t 5 /nobreak >nul
+)
+
+echo [SimpleJunkRemover] Temporary file removal will begin shortly...
+timeout /t 5 /nobreak >nul
+
+set "TARGETS=%TEMP%;%SystemRoot%\Temp;%SystemRoot%\Prefetch;%SystemRoot%\SoftwareDistribution\Download;%SystemRoot%\SoftwareDistribution\DeliveryOptimization;%SystemRoot%\System32\LogFiles;%SystemRoot%\Logs\CBS;%SystemRoot%\Logs\DISM;%SystemRoot%\Panther;%SystemRoot%\LiveKernelReports;%SystemRoot%\Minidump;%SystemRoot%\MEMORY.DMP;%SystemRoot%\System32\winevt\Logs;%SystemRoot%\System32\LogFiles\HTTPERR;%SystemRoot%\ServiceProfiles\LocalService\AppData\Local\FontCache;%SystemRoot%\Installer\$PatchCache$;%SystemDrive%\inetpub\logs\LogFiles;%SystemDrive%\$WINDOWS.~BT;%SystemDrive%\found.000;%LocalAppData%\Microsoft\Windows\INetCache;%LocalAppData%\Microsoft\Windows\Explorer;%LocalAppData%\Microsoft\Windows\WER;%ProgramData%\Microsoft\Windows\WER;%LocalAppData%\CrashDumps;%LocalAppData%\D3DSCache;%LocalAppData%\Intel\ShaderCache;%LocalAppData%\NVIDIA\DXCache;%LocalAppData%\NVIDIA\GLCache;%LocalAppData%\AMD\DxCache;%LocalAppData%\AMD\GLCache;%LocalAppData%\Google\Chrome\User Data\Default\Cache;%LocalAppData%\Google\Chrome\User Data\Default\Code Cache;%LocalAppData%\Microsoft\Edge\User Data\Default\Cache;%LocalAppData%\Microsoft\Edge\User Data\Default\Code Cache;%LocalAppData%\Chromium\User Data\Default\Cache;%LocalAppData%\BraveSoftware\Brave-Browser\User Data\Default\Cache;%LocalAppData%\Vivaldi\User Data\Default\Cache;%LocalAppData%\Yandex\YandexBrowser\User Data\Default\Cache;%LocalAppData%\Arc\User Data\Default\Cache;%AppData%\Opera Software\Opera Stable\Cache;%AppData%\Opera Software\Opera GX Stable\Cache;%AppData%\discord\Cache;%AppData%\discord\Code Cache;%LocalAppData%\Spotify\Storage;%LocalAppData%\Spotify\Data;%AppData%\Telegram Desktop\tdata\user_data;%AppData%\WhatsApp\Cache;%AppData%\Microsoft\Teams\Cache;%AppData%\Zoom\data;%AppData%\Zoom\temp;%AppData%\vlc\art;%LocalAppData%\vlc\cache;%LocalAppData%\Adobe\Common\Media Cache Files;%LocalAppData%\Adobe\Common\Media Cache;%LocalAppData%\Adobe\Acrobat\DC\Cache;%LocalAppData%\Microsoft\Office\UnsavedFiles;%LocalAppData%\Steam\htmlcache;%ProgramFiles(x86)%\Steam\package\tmp;%ProgramFiles(x86)%\Steam\depotcache;%LocalAppData%\EpicGamesLauncher\Saved\webcache;%LocalAppData%\Battle.net;%ProgramData%\Battle.net;%ProgramData%\Blizzard Entertainment;%LocalAppData%\Electronic Arts\EA Desktop\Cache;%ProgramFiles(x86)%\Ubisoft\Ubisoft Game Launcher\cache;%ProgramData%\GOG.com\Galaxy\webcache;%AppData%\Code\Cache;%AppData%\Code\CachedData;%AppData%\Code\CachedExtensions;%AppData%\npm-cache;%LocalAppData%\Yarn\Cache;%LocalAppData%\pip\cache;%USERPROFILE%\.cargo\registry\cache;%USERPROFILE%\.gradle\caches;%USERPROFILE%\.m2\repository;%USERPROFILE%\.android\build-cache;%USERPROFILE%\.android\cache;%ProgramData%\Microsoft\VisualStudio\Packages"
+
+set "LISTFILE=%TEMP%\junk_folders_%RANDOM%.txt"
+if exist "%LISTFILE%" del /f /q "%LISTFILE%" >nul 2>&1
+
+for %%T in ("%TARGETS:;=" "%") do (
+    if exist "%%~T" echo %%~T>>"%LISTFILE%"
+)
+
+if exist "%LocalAppData%\Mozilla\Firefox\Profiles" (
+    for /d %%P in ("%LocalAppData%\Mozilla\Firefox\Profiles\*") do (
+        if exist "%%~P\cache2" echo %%~P\cache2>>"%LISTFILE%"
+    )
+)
+if exist "%LocalAppData%\Waterfox\Profiles" (
+    for /d %%P in ("%LocalAppData%\Waterfox\Profiles\*") do (
+        if exist "%%~P\cache2" echo %%~P\cache2>>"%LISTFILE%"
+    )
+)
+if exist "%LocalAppData%\LibreWolf\Profiles" (
+    for /d %%P in ("%LocalAppData%\LibreWolf\Profiles\*") do (
+        if exist "%%~P\cache2" echo %%~P\cache2>>"%LISTFILE%"
+    )
+)
+if exist "%LocalAppData%\Moonchild Productions\Pale Moon\Profiles" (
+    for /d %%P in ("%LocalAppData%\Moonchild Productions\Pale Moon\Profiles\*") do (
+        if exist "%%~P\cache2" echo %%~P\cache2>>"%LISTFILE%"
+    )
+)
+if exist "%USERPROFILE%\Desktop\Tor Browser\Browser\TorBrowser\Data\Browser\profile.default\cache2" (
+    echo %USERPROFILE%\Desktop\Tor Browser\Browser\TorBrowser\Data\Browser\profile.default\cache2>>"%LISTFILE%"
+)
+if exist "%LocalAppData%\JetBrains" (
+    for /d %%J in ("%LocalAppData%\JetBrains\*") do (
+        if exist "%%~J\caches" echo %%~J\caches>>"%LISTFILE%"
+    )
+)
+if exist "%LocalAppData%\Packages" (
+    for /d %%K in ("%LocalAppData%\Packages\*Teams*") do (
+        if exist "%%~K\LocalCache" echo %%~K\LocalCache>>"%LISTFILE%"
+    )
+    for /d %%W in ("%LocalAppData%\Packages\*WhatsApp*") do (
+        if exist "%%~W\LocalCache" echo %%~W\LocalCache>>"%LISTFILE%"
+    )
+)
+
+powershell -NoProfile -Command ^
+    "$folderListPath = $env:LISTFILE; " ^
+    "$folders = if (Test-Path $folderListPath) { @(Get-Content $folderListPath | Where-Object { Test-Path $_ }) } else { @() }; " ^
+    "$allFiles = New-Object System.Collections.ArrayList; " ^
+    "foreach ($f in $folders) { " ^
+    "    if (Test-Path $f -PathType Leaf) { " ^
+    "        try { $item = Get-Item -LiteralPath $f -Force -ErrorAction SilentlyContinue; if ($item) { [void]$allFiles.Add($item) } } catch {} " ^
+    "    } else { " ^
+    "        $found = @(Get-ChildItem $f -Recurse -Force -ErrorAction SilentlyContinue | Where-Object { -not $_.PSIsContainer }); " ^
+    "        if ($found -and $found.Count -gt 0) { [void]$allFiles.AddRange($found) } " ^
+    "    } " ^
+    "} " ^
+    "$totalFiles = $allFiles.Count; " ^
+    "$freedBytes = [double]0; " ^
+    "$deletedCount = 0; " ^
+    "if ($totalFiles -eq 0) { " ^
+    "    Write-Host '[SimpleJunkRemover] Removing temporary files [0/0]'; " ^
+    "} else { " ^
+    "    foreach ($file in $allFiles) { " ^
+    "        $len = [double]$file.Length; " ^
+    "        try { " ^
+    "            [System.IO.File]::Delete($file.FullName); " ^
+    "            $freedBytes += $len; " ^
+    "        } catch {} " ^
+    "        $deletedCount++; " ^
+    "        [Console]::Write([char]13 + ('[SimpleJunkRemover] Removing temporary files [{0}/{1}]' -f $deletedCount, $totalFiles)); " ^
+    "    } " ^
+    "    [Console]::WriteLine(); " ^
+    "} " ^
+    "foreach ($f in $folders) { " ^
+    "    if (Test-Path $f -PathType Container) { " ^
+    "        $subDirs = @(Get-ChildItem $f -Recurse -Force -ErrorAction SilentlyContinue | Where-Object { $_.PSIsContainer } | Sort-Object { $_.FullName.Length } -Descending); " ^
+    "        foreach ($d in $subDirs) { " ^
+    "            try { [System.IO.Directory]::Delete($d.FullName, $false) } catch {} " ^
+    "        } " ^
+    "    } " ^
+    "} " ^
+    "$tb = [double]1099511627776; " ^
+    "$gb = [double]1073741824; " ^
+    "$mb = [double]1048576; " ^
+    "$kb = [double]1024; " ^
+    "$culture = [System.Globalization.CultureInfo]::InvariantCulture; " ^
+    "if ($freedBytes -ge $tb) { $freedFormatted = ($freedBytes / $tb).ToString('0.00', $culture) + 'TB' } " ^
+    "elseif ($freedBytes -ge $gb) { $freedFormatted = ($freedBytes / $gb).ToString('0.00', $culture) + 'GB' } " ^
+    "elseif ($freedBytes -ge $mb) { $freedFormatted = ($freedBytes / $mb).ToString('0.00', $culture) + 'MB' } " ^
+    "elseif ($freedBytes -ge $kb) { $freedFormatted = ($freedBytes / $kb).ToString('0.00', $culture) + 'KB' } " ^
+    "else { $freedFormatted = ('{0}B' -f [long]$freedBytes) } " ^
+    "Write-Host '[SimpleJunkRemover] Finished removing temporary files...'; " ^
+    "Write-Host ('[SimpleJunkRemover] Recovered [{0}]' -f $freedFormatted); "
+
+if exist "%LISTFILE%" del /f /q "%LISTFILE%" >nul 2>&1
+
+:done
+pause >nul
+goto done

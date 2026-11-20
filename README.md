@@ -1,4 +1,5 @@
 <div align="center">
+  
 <h1>Simple Junk Remover</h1>
 
 100% Open-Source / Extremely lightweight / 68 Features / Windows 7-11 / Windows Server 2008 R2-2025 <br>
@@ -12,6 +13,7 @@ No telemetry / No internet required / No admin rights needed / Fast and easy to 
 <h1>Full Cleaning List [v26.11]</h1>
 
 <div align="left">
+  
 ### Windows Core & System Diagnostics
 - User Temporary Files
 - System Temporary Files
